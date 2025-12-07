@@ -100,7 +100,14 @@ SMTChecker identified that `balance <= 1000` was not enforced.
 ### 4.5 Fixed invariant with domain restriction  
 Enforced via `require(x <= 1000);`, thus solver proves the invariant.
 
-These provide the conceptual foundation for all upcoming work.
+### 4.6 State-transition invariants  
+Demonstrated multi-function invariant reasoning with `BoundedCounter`:  
+- Proved `counter <= MAX` holds across **all** state changing functions  
+- Showed how preconditions preserve invariants through state transitions  
+- Learned that SMTChecker verifies: `∀ functions, ∀ inputs: preconditions ⇒ invariant holds`  
+- Created failing version (counterexample) and fixed version (proof)
+
+These exercises provide the conceptual foundation for all upcoming work.
 
 ## 5. Roadmap 🎯
 
@@ -109,7 +116,7 @@ These provide the conceptual foundation for all upcoming work.
 - Preconditions  
 - State invariants  
 - Transition invariants  
-- Reasoning over mappings/arrays  
+- 🎯 Reasoning over mappings/arrays (next)  
 - Arithmetic proofs  
 
 ### Phase 2 - Hoare Logic (solc-verify)

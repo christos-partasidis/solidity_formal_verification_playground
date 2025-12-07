@@ -1,0 +1,8 @@
+rule onlyAdminCanUpgrade {
+    // anyone except admin tries to upgrade
+    require msg.sender != proxy.admin();
+    proxy.upgradeTo(someAddress);
+
+    // must revert
+    assert false;
+}

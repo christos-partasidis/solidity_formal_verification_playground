@@ -1,0 +1,3 @@
+invariant valuePreserved upgradeTo {
+    old.proxy.value() == proxy.value();
+}

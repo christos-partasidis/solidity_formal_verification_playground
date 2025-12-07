@@ -126,11 +126,11 @@ These provide the conceptual foundation for all upcoming work.
 - Behavioral equivalence rules  
 
 ### Phase 4 - UUPS Upgradeability Verification
-- ERC1967 layout invariants  
+- ERC1967(or similar) layout invariants  
 - Upgrade flow correctness  
 - Implementation logic invariants  
 
-### Phase 5 — Advanced Topics
+### Phase 5 - Advanced Topics
 - Multi contract Certora invariants  
 - Symbolic execution with Halmos  
 - Governance and permission invariants  

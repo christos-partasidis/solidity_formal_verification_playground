@@ -10,7 +10,7 @@ Each exercise builds on the previous one. Work through them in order.
 
 ## Exercise 1: Basic Assertions
 
-**Files:** `AlwaysFalse.sol`, `AlwaysFalseFixed.sol`
+**Files:** `01_AlwaysFalse.sol`, `01_AlwaysFalseFixed.sol`
 
 **Concept:** Understanding how SMTChecker discovers counterexamples.
 
@@ -21,19 +21,19 @@ Each exercise builds on the previous one. Work through them in order.
 
 **Commands:**
 ```bash
-solc --model-checker-engine chc AlwaysFalse.sol
-solc --model-checker-engine chc AlwaysFalseFixed.sol
+solc --model-checker-engine chc 01_AlwaysFalse.sol
+solc --model-checker-engine chc 01_AlwaysFalseFixed.sol
 ```
 
 **Expected Output:**
-- `AlwaysFalse.sol`: Assertion violation with counterexample
-- `AlwaysFalseFixed.sol`: All assertions hold
+- `01_AlwaysFalse.sol`: Assertion violation with counterexample
+- `01_AlwaysFalseFixed.sol`: All assertions hold
 
 ---
 
 ## Exercise 2: Unreachable States
 
-**File:** `TestSmack.sol`
+**File:** `02_TestSmack.sol`
 
 **Concept:** Assertions in unreachable code are vacuously true.
 
@@ -46,15 +46,15 @@ solc --model-checker-engine chc AlwaysFalseFixed.sol
 
 ## Exercise 3: State Invariants (Violation Detection)
 
-**Files:** `InvariantFail.sol`, `InvariantFixed.sol`
+**Files:** `03_InvariantFail.sol`, `03_InvariantFixed.sol`
 
 **Concept:** Proving properties that must hold for state variables.
 
 **Key Learning:**
 - State invariants are properties that should always be true
 - SMTChecker explores all possible inputs to find violations
-- `InvariantFail.sol`: `balance <= 1000` not enforced → counterexample found
-- `InvariantFixed.sol`: Precondition `require(x <= 1000)` ensures invariant
+- `03_InvariantFail.sol`: `balance <= 1000` not enforced → counterexample found
+- `03_InvariantFixed.sol`: Precondition `require(x <= 1000)` ensures invariant
 
 **Verification Goal:**
 ```
@@ -65,7 +65,7 @@ solc --model-checker-engine chc AlwaysFalseFixed.sol
 
 ## Exercise 4: Domain Restriction
 
-**Files:** `RangeBox.sol`, `SimpleBox.sol`, `SumBox.sol`
+**Files:** `04_RangeBox.sol`, `04_SimpleBox.sol`, `04_SumBox.sol`
 
 **Concept:** Using `require()` to restrict input domains and prove invariants.
 
@@ -79,15 +79,15 @@ solc --model-checker-engine chc AlwaysFalseFixed.sol
 
 ## Exercise 5: State-Transition Invariants ⭐ (Latest)
 
-**Files:** `BoundedCounter.sol`, `BoundedCounterFixed.sol`
+**Files:** `05_BoundedCounter.sol`, `05_BoundedCounterFixed.sol`
 
 **Concept:** Proving invariants hold across **all** state-changing functions.
 
 **Key Learning:**
 - **Contract invariant**: Property that holds after every transaction
 - Multi-function reasoning: SMTChecker verifies all execution paths
-- `BoundedCounter.sol`: Invariant `counter <= MAX` violated by `increment(101)`
-- `BoundedCounterFixed.sol`: Preconditions in all functions preserve invariant
+- `05_BoundedCounter.sol`: Invariant `counter <= MAX` violated by `increment(101)`
+- `05_BoundedCounterFixed.sol`: Preconditions in all functions preserve invariant
 
 **Formal Statement:**
 ```
@@ -98,15 +98,15 @@ solc --model-checker-engine chc AlwaysFalseFixed.sol
 **Commands:**
 ```bash
 # See counterexample
-solc --model-checker-engine chc BoundedCounter.sol
+solc --model-checker-engine chc 05_BoundedCounter.sol
 
 # Verify proof
-solc --model-checker-engine chc BoundedCounterFixed.sol
+solc --model-checker-engine chc 05_BoundedCounterFixed.sol
 ```
 
 **What to Observe:**
-1. In `BoundedCounter.sol`: Counterexample showing `increment(101)` breaks invariant
-2. In `BoundedCounterFixed.sol`: All assertions hold because preconditions enforce bounds
+1. In `05_BoundedCounter.sol`: Counterexample showing `increment(101)` breaks invariant
+2. In `05_BoundedCounterFixed.sol`: All assertions hold because preconditions enforce bounds
 3. How `require()` statements act as formal preconditions
 4. Multi-function invariant reasoning
 

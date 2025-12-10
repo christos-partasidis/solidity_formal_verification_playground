@@ -1,7 +1,7 @@
 # Solidity Formal Verification Playground  
 *A progressive repository for learning formal verification of Solidity smart contracts, from basic assertions to industry-grade invariants for upgradeable systems.*
 
-## 1. Overview 🔎
+## 1. Overview 
 
 This repository explores formal verification in Solidity using:
 
@@ -13,7 +13,7 @@ This repository explores formal verification in Solidity using:
 The goal is to develop a deep understanding of how to specify and prove correctness in Ethereum smart contracts. The smart contracts
 range from small isolated functions to multi contract upgradeable architectures used in finance, DeFi, and Central bank digital currency(CBDC) systems.
 
-## 2. Why Formal Verification Matters 🤔
+## 2. Why Formal Verification Matters 
 
 Mission critical blockchain applications require **mathematical guarantees** of correctness, especially:
 
@@ -34,9 +34,9 @@ This repository is designed as a step-by-step laboratory for mastering these tec
 
 Each exercise develops the mental framework needed for deeper verification techniques.
 
-## 3. Tools Used in This Repository⚙️
+## 3. Tools Used in This Repository
 
-### 3.1. Solidity SMTChecker ⚙️
+### 3.1. Solidity SMTChecker 
 
 - Integrated into the Solidity compiler  
 - Explores execution paths symbolically  
@@ -48,7 +48,7 @@ The SMTChecker interprets assertions as logical formulas and attempts to prove:
 
 ∀ inputs: preconditions ⇒ assertion holds
 
-### 3.2. Certora Prover ⚙️
+### 3.2. Certora Prover 
 
 Used by: Aave, Compound, Balancer, Lido, MakerDAO, Uniswap  
 
@@ -62,7 +62,7 @@ Provides:
 
 Certora is considered the gold standard for high assurance verification in production systems.
 
-### 3.3. solc-verify ⚙️
+### 3.3. solc-verify 
 
 A standalone tool that applies **Hoare logic**, enabling:
 
@@ -82,7 +82,7 @@ Hoare logic is essential in:
 
 This makes **solc-verify** an important intermediate tool, especially for future work related to CBDCs or standardized digital currency frameworks.
 
-## 4. Completed Exercises 🏋️‍♀️
+## 4. Completed Exercises 
 
 ### 4.1. SMTChecker setup  
 Confirmed solver compatibility and execution.
@@ -109,14 +109,14 @@ Demonstrated multi-function invariant reasoning with `BoundedCounter`:
 
 These exercises provide the conceptual foundation for all upcoming work.
 
-## 5. Roadmap 🎯
+## 5. Roadmap 
 
-### Phase 1 - Foundation (SMTChecker) (in progress🎯)
+### Phase 1 - Foundation (SMTChecker) (in progress)
 - Assertion semantics  
 - Preconditions  
 - State invariants  
 - Transition invariants  
-- 🎯 Reasoning over mappings/arrays (next)  
+- Reasoning over mappings/arrays (next)  
 - Arithmetic proofs  
 
 ### Phase 2 - Hoare Logic (solc-verify)
@@ -144,7 +144,7 @@ These exercises provide the conceptual foundation for all upcoming work.
 - Economic invariants (AMMs, lending protocols)  
 
 
-## End Goal 🏆
+## End Goal
 
 By completing this repository, you will gain the ability to:
 

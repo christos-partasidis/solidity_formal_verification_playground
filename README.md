@@ -107,17 +107,25 @@ Demonstrated multi-function invariant reasoning with `BoundedCounter`:
 - Learned that SMTChecker verifies: `∀ functions, ∀ inputs: preconditions ⇒ invariant holds`  
 - Created failing version (counterexample) and fixed version (proof)
 
+### 4.7 Invariants over mappings and arrays  
+Explored collection-based invariants with `TokenBalance` and `ArraySum`:  
+- Discovered what SMTChecker **CAN** verify: individual mapping entries, element-wise properties  
+- Discovered what SMTChecker **CANNOT** verify: quantified invariants (`∀`), sum invariants (`Σ`)  
+- Learned the **explicit aggregate tracking pattern**: maintain totals as state variables  
+- Proved consistency of atomic updates (balance + totalSupply together)  
+- Identified need for Certora Prover for true sum invariants
+
 These exercises provide the conceptual foundation for all upcoming work.
 
 ## 5. Roadmap 
 
-### Phase 1 - Foundation (SMTChecker) (in progress)
-- Assertion semantics  
-- Preconditions  
-- State invariants  
-- Transition invariants  
-- Reasoning over mappings/arrays (next)  
-- Arithmetic proofs  
+### Phase 1 - Foundation (SMTChecker) (in progress🎯)
+- ✅ Assertion semantics  
+- ✅ Preconditions  
+- ✅ State invariants  
+- ✅ Transition invariants  
+- ✅ Reasoning over mappings/arrays  
+- 🎯 Arithmetic proofs (next)  
 
 ### Phase 2 - Hoare Logic (solc-verify)
 - Pre/post-conditions  

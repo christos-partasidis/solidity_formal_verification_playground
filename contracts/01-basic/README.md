@@ -77,7 +77,7 @@ solc --model-checker-engine chc 01_AlwaysFalseFixed.sol
 
 ---
 
-## Exercise 5: State-Transition Invariants ⭐ (Latest)
+## Exercise 5: State-Transition Invariants (Latest)
 
 **Files:** `05_BoundedCounter.sol`, `05_BoundedCounterFixed.sol`
 
@@ -117,11 +117,78 @@ solc --model-checker-engine chc 05_BoundedCounterFixed.sol
 
 ---
 
+## Exercise 6: Invariants Over Mappings and Arrays ⭐ (Latest)
+
+**Files:** 
+- `06_TokenBalance.sol`, `06_TokenBalanceFixed.sol` (mapping invariants)
+- `06_ArraySum.sol`, `06_ArraySumFixed.sol` (array invariants)
+
+**Concept:** Proving properties about collections and aggregate values.
+
+**Key Learning:**
+
+### Mapping Invariants
+- SMTChecker **CAN** reason about individual mapping entries:
+  - `balances[address] <= totalSupply` ✓
+  - Local properties about specific keys ✓
+  
+- SMTChecker **CANNOT** verify quantified invariants:
+  - `∀ address: balances[address] <= MAX` ✗
+  - `Σ balances[i] == totalSupply` ✗
+  - Cross-account relationships without explicit tracking ✗
+
+### Array Invariants
+- SMTChecker tracks bounded array contents symbolically
+- Can verify element-wise properties for small arrays
+- Cannot verify loop invariants or sum properties automatically
+- **Design pattern**: Maintain explicit aggregates (sum, count) as state variables
+
+### Critical Design Pattern
+```solidity
+// ❌ Unverifiable with SMTChecker
+assert(sum(balances) == totalSupply);
+
+// ✅ Verifiable with SMTChecker
+// Track totalSupply explicitly
+// Update atomically with balance changes
+// SMTChecker verifies update consistency
+```
+
+**Commands:**
+```bash
+# Mapping invariants
+solc --model-checker-engine chc 06_TokenBalance.sol        # See violation
+solc --model-checker-engine chc 06_TokenBalanceFixed.sol   # Verify proof
+
+# Array invariants
+solc --model-checker-engine chc 06_ArraySum.sol            # See bug in update()
+solc --model-checker-engine chc 06_ArraySumFixed.sol       # Verify correctness
+```
+
+**What to Observe:**
+1. `06_TokenBalance.sol`: Counterexample where `mint(1000001)` exceeds `MAX_SUPPLY`
+2. `06_TokenBalanceFixed.sol`: Preconditions prevent all violations
+3. `06_ArraySum.sol`: Bug where `update()` doesn't adjust `sum`
+4. `06_ArraySumFixed.sol`: Correct atomic updates maintain consistency
+
+**Why This Matters:**
+- **ERC20 tokens**: Total supply invariant is critical
+- **DeFi protocols**: Reserve tracking must be accurate
+- **CBDCs**: Circulation limits must be enforced
+- **Upgradeable systems**: Storage invariants across versions
+
+**Limitations Discovered:**
+- For true sum invariants (`Σ balances == total`), need **Certora Prover**
+- For quantified properties (`∀ x`), need **Certora's ghost variables**
+- This motivates Phase 4 of the roadmap!
+
+---
+
 ## Next Steps
 
-✅ **Completed:** Basic assertions, state invariants, transition invariants  
-🎯 **Next:** Invariants over mappings and arrays  
-📍 **Then:** Arithmetic boundary proofs
+✅ **Completed:** Basic assertions, state invariants, transition invariants, mappings/arrays  
+🎯 **Next:** Arithmetic boundary proofs  
+📍 **Then:** Move to Phase 2 (Hoare Logic with solc-verify)
 
 ---
 

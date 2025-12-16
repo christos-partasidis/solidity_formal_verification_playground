@@ -47,6 +47,13 @@ contract TokenBalanceFixed {
         
         // Handle potential overflow for receiver
         require(balances[to] + amount >= balances[to], "Receiver overflow");
+
+        // SMTChecker Helper: 
+        // Since SMTChecker cannot prove `sum(balances) == totalSupply`, it considers
+        // states where `balances[to] + balances[from] > totalSupply` to be reachable.
+        // In those states, a transfer could violate the invariant.
+        // We add this redundant check to help the solver.
+        require(balances[to] + amount <= totalSupply, "Solver helper");
         
         balances[from] -= amount;
         balances[to] += amount;

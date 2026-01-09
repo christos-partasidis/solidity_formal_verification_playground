@@ -79,19 +79,5 @@ contract TokenBalanceFixed {
 /// 2. **Global Invariants**: SMTChecker tracks aggregate values
 ///    - totalSupply <= MAX_SUPPLY ✓
 ///
-/// 3. **What SMTChecker CANNOT Prove**:
-///    - Sum invariants: ∑ balances[i] == totalSupply
-///    - Quantified properties: ∀ address a: balances[a] <= MAX_SUPPLY
-///    - Cross-account relationships without explicit tracking
-///
-/// 4. **When to Use Certora**:
-///    - Need to verify: "sum of all balances equals total supply"
-///    - Need quantified invariants over unbounded domains
-///    - Need multi-contract invariants
-///    - Need to prove absence of certain attack patterns
-///
-/// 5. **Design Pattern**:
-///    Track aggregates explicitly (totalSupply) rather than computing sums
-///    This makes properties verifiable with SMTChecker
-///
-/// This is the foundation for verifying ERC20 tokens, DeFi protocols, and CBDCs
+/// 3. **Limitation**: Cannot prove sum invariants
+///    - ∑ balances[i] == totalSupply ✗ (needs Certora)

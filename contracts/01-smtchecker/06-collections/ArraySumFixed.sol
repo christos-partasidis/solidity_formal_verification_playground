@@ -78,24 +78,5 @@ contract ArraySumFixed {
 ///
 /// 2. **Why This Works**:
 ///    - SMTChecker doesn't verify "sum == Σ values[i]"
-///    - But it DOES verify that sum updates match array operations
-///    - The invariant holds by construction, not by proof of equivalence
-///
-/// 3. **Design Pattern for Verification**:
-///    ```
-///    Unverifiable: ∀ i: Σ array[i] == total
-///    Verifiable: Each operation updates total correctly
-///    ```
-///
-/// 4. **When This Pattern Works**:
-///    ✓ Token total supply (sum of balances)
-///    ✓ Voting power (sum of delegated votes)
-///    ✓ Pool reserves (sum of deposits)
-///    ✓ CBDC circulation (sum of issued tokens)
-///
-/// 5. **Limitations Still Present**:
-///    - Cannot prove: "sum is actually correct given initial state"
-///    - Cannot prove: "no unauthorized sum modifications"
-///    - For these, need Certora with ghost variables
-///
-/// Next Phase: Certora will let us prove the actual sum invariant!
+///    - But it DOES verify that our update logic is self-consistent
+///    - The explicit tracking pattern is both gas-efficient and verifiable

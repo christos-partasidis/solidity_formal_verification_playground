@@ -15,9 +15,9 @@ range from small isolated functions to multi contract upgradeable architectures 
 
 ## 2. Why Formal Verification Matters 
 
-Mission critical blockchain applications require **mathematical guarantees** of correctness, especially:
+Mission critical blockchain applications require mathematical guarantees of correctness, especially:
 
-- Central Bank Digital Currencies (e.g., **EuroCoin** and other CBDCs)  
+- Central Bank Digital Currencies (e.g., EuroCoin and other CBDCs)  
 - Regulated financial infrastructure  
 - Permissioned institutional ledgers  
 - Public DeFi protocols securing billions  
@@ -54,33 +54,32 @@ Used by: Aave, Compound, Balancer, Lido, MakerDAO, Uniswap
 
 Provides:
 
-- Rule based invariants  
-- Multi contract reasoning  
-- Upgrade safety proofs  
-- Storage layout verification  
+- Rule based invariants
+- Multi contract reasoning
+- Upgrade safety proofs
+- Storage layout verification
 - Cross function and cross contract correctness  
 
 Certora is considered the gold standard for high assurance verification in production systems.
 
-### 3.3. solc-verify 
+### 3.3. solc-verify (*postponed*)
 
-A standalone tool that applies **Hoare logic**, enabling:
+A standalone tool that applies Hoare logic, enabling:
 
 - Pre-conditions and post-conditions  
 - Loop invariants  
 - Function level correctness proofs  
 - Modular reasoning  
 
-Why Hoare Logic Matters
+Why Hoare Logic Matters?
 
 Hoare logic is essential in:
 
 - Certified financial systems  
-- CBDCs and institutional tokens (e.g., **EuroCoin**)  
 - Systems requiring regulatory grade correctness  
 - High stakes smart contract standards  
 
-This makes **solc-verify** an important intermediate tool, especially for future work related to CBDCs or standardized digital currency frameworks.
+This makes solc-verify an important intermediate tool, especially for future work related to CBDCs or standardized digital currency frameworks.
 
 ## 4. Completed Exercises 
 
@@ -102,16 +101,16 @@ Enforced via `require(x <= 1000);`, thus solver proves the invariant.
 
 ### 4.6 State-transition invariants  
 Demonstrated multi-function invariant reasoning with `BoundedCounter`:  
-- Proved `counter <= MAX` holds across **all** state changing functions  
+- Proved `counter <= MAX` holds across all state changing functions  
 - Showed how preconditions preserve invariants through state transitions  
 - Learned that SMTChecker verifies: `∀ functions, ∀ inputs: preconditions ⇒ invariant holds`  
 - Created failing version (counterexample) and fixed version (proof)
 
 ### 4.7 Invariants over mappings and arrays  
 Explored collection-based invariants with `TokenBalance` and `ArraySum`:  
-- Discovered what SMTChecker **CAN** verify: individual mapping entries, element-wise properties  
-- Discovered what SMTChecker **CANNOT** verify: quantified invariants (`∀`), sum invariants (`Σ`)  
-- Learned the **explicit aggregate tracking pattern**: maintain totals as state variables  
+- Discovered what SMTChecker CAN verify: individual mapping entries, element-wise properties  
+- Discovered what SMTChecker CANNOT verify: quantified invariants (`∀`), sum invariants (`Σ`)  
+- Learned the explicit aggregate tracking pattern: maintain totals as state variables  
 - Proved consistency of atomic updates (balance + totalSupply together)  
 - Identified need for Certora Prover for true sum invariants
 
@@ -119,7 +118,7 @@ These exercises provide the conceptual foundation for all upcoming work.
 
 ## 5. Roadmap 
 
-### Phase 1 - Foundation (SMTChecker) (in progress🎯)
+### Phase 1 - Foundation (SMTChecker) 
 - ✅ Assertion semantics  
 - ✅ Preconditions  
 - ✅ State invariants  
@@ -127,7 +126,7 @@ These exercises provide the conceptual foundation for all upcoming work.
 - ✅ Reasoning over mappings/arrays  
 - 🎯 Arithmetic proofs (next)  
 
-### Phase 2 - Hoare Logic (solc-verify)
+### Phase 2 - Hoare Logic (solc-verify) (*postponed*)
 - Pre/post-conditions  
 - Loop invariants  
 - Modular verification  

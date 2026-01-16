@@ -75,7 +75,7 @@ invariant counterBounded()
             // This is how we prove invariants inductively:
             //   Base case: invariant holds after constructor (counter = 0 <= 100) ✓
             //   Inductive step: if counter <= MAX before, then counter <= MAX after ✓
-            require counter() <= MAX();
+            require counter() <= MAX(), "Inductive hypothesis: assume invariant holds before function call";
         }
     }
 

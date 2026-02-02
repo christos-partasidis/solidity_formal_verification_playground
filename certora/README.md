@@ -6,8 +6,9 @@ This directory contains Certora Verification Language (CVL) specifications for f
 
 1. [CVL Syntax for Beginners](#1-cvl-syntax-for-beginners)
 2. [Understanding the Verification Process](#2-understanding-the-verification-process)
-3. [Directory Structure](#3-directory-structure)
-4. [Running Verifications](#4-running-verifications)
+3. [Completed Specifications](#3-completed-specifications)
+4. [Directory Structure](#4-directory-structure)
+5. [Running Verifications](#5-running-verifications)
 
 ---
 
@@ -266,7 +267,102 @@ Verification time depends on:
 
 ---
 
-## 3. Directory Structure
+## 3. Completed Specifications
+
+We have three verified specifications demonstrating progressively advanced CVL concepts:
+
+### 3.1 BoundedCounter.spec
+
+**Purpose:** Introduction to CVL basics — rules and invariants.
+
+**Key concepts demonstrated:**
+- `methods` block with `envfree` annotation
+- `env` type for state-changing functions
+- Basic `rule` and `invariant` syntax
+- `preserved` block for inductive proofs
+
+**Run:** `certoraRun certora/confs/BoundedCounter.conf`
+
+---
+
+### 3.2 TokenBalance.spec (Ghost Variables)
+
+**Purpose:** Demonstrate **ghost variables** — proving properties SMTChecker cannot!
+
+**The Problem:**
+SMTChecker **cannot** prove: `Σ balances[addr] == totalSupply`
+
+Why? SMTChecker can't reason about quantified properties over unbounded mappings.
+
+**The Solution:**
+Use a **ghost variable** to independently track the sum of all balances:
+
+```cvl
+ghost mathint sumOfBalances {
+    init_state axiom sumOfBalances == 0;
+}
+
+hook Sstore balances[KEY address addr] uint256 newValue (uint256 oldValue) {
+    sumOfBalances = sumOfBalances - oldValue + newValue;
+}
+
+invariant sumOfBalancesEqualsTotalSupply()
+    sumOfBalances == to_mathint(totalSupply())
+```
+
+**Key concepts demonstrated:**
+- `ghost` variables for tracking aggregate state
+- `hook Sstore` to intercept storage writes
+- `mathint` type for arbitrary precision
+- `to_mathint()` conversion
+- Parametric rules with `method f`
+
+**Run:** `certoraRun certora/confs/TokenBalance.conf`
+
+---
+
+### 3.3 ArraySum.spec
+
+**Purpose:** Rule-based verification for arrays (alternative to ghost approach).
+
+**Why different from TokenBalance?**
+- Arrays have complex storage (length + elements stored separately)
+- Ghost hooks for arrays are trickier than mappings
+- Sometimes **rules are simpler** than ghost tracking
+
+**Key concepts demonstrated:**
+- Rule-based verification (no ghosts)
+- Parametric rules with `method f` and `calldataarg`
+- `sig:functionName(params).selector` syntax
+- When to use rules vs ghosts
+
+**Run:** `certoraRun certora/confs/ArraySum.conf`
+
+---
+
+### Comparison: Ghost Variables vs Rules
+
+| Aspect | TokenBalance (Ghost) | ArraySum (Rules) |
+|--------|---------------------|------------------|
+| Data structure | `mapping(address => uint)` | `uint256[]` |
+| Verification approach | Ghost + hooks + invariant | Rules only |
+| Proves exact sum | ✅ Yes (`Σ balances == total`) | ❌ No (proves operations correct) |
+| Complexity | Higher | Lower |
+| Best for | Global invariants over mappings | Functional correctness |
+
+**When to use ghosts:**
+- Need to prove aggregate properties (`Σ`, `∀`, `∃`)
+- Working with mappings (clean KEY-based hooks)
+- Property must hold across ALL functions
+
+**When to use rules:**
+- Verifying specific function behavior
+- Arrays (complex storage layout)
+- Simpler specs that don't need global tracking
+
+---
+
+## 4. Directory Structure
 
 ```
 certora/
@@ -305,7 +401,7 @@ certora/
 
 ---
 
-## 4. Running Verifications
+## 5. Running Verifications
 
 ### Basic Command
 
@@ -338,6 +434,6 @@ The dashboard shows:
 
 ## Next Steps
 
-1. **Learn more CVL**: See [Certora Documentation](https://docs.certora.com/)
-2. **Try ghost variables**: For tracking aggregate values (sums over mappings)
-3. **Verify TokenBalance**: Prove `Σ balances == totalSupply` (what SMTChecker couldn't!)
+1. **Phase 3: Transparent Proxy Verification** — Verify upgrade safety, storage slots, admin controls
+2. **Learn more CVL**: See [Certora Documentation](https://docs.certora.com/)
+3. Analyse and verify diamond pattern

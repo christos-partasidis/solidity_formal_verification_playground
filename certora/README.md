@@ -362,19 +362,62 @@ invariant sumOfBalancesEqualsTotalSupply()
 
 ---
 
+### 3.4 TransparentProxy.spec ✅ 🔥 (Proxy Pattern)
+
+**Contract:** `contracts/03-transparent-proxy/TransparentProxy.sol`
+
+**Purpose:** Verify access control and upgrade safety in proxy contracts.
+
+**What it proves:**
+| Property | Type | Description |
+|----------|------|-------------|
+| `onlyAdminCanUpgrade` | Rule | Non-admins cannot call upgradeTo() |
+| `adminCanUpgrade` | Rule | Admin can successfully upgrade |
+| `upgradeChangesImplementation` | Rule | upgradeTo(x) sets implementation to x |
+| `upgradePreservesAdmin` | Rule | upgradeTo() doesn't change admin |
+| `adminNeverChangesExceptFallback` | Parametric | No non-fallback function changes admin |
+| `onlyUpgradeChangesImplementation` | Parametric | Only upgradeTo can change implementation |
+| `viewFunctionsAreReadOnly` | Rule | View functions don't modify state |
+
+**Key concepts demonstrated:**
+- `@withrevert` and `lastReverted` for revert checking
+- `f.isFallback` to filter out fallback functions
+- Parametric rules with `filtered { f -> condition }`
+- Understanding proxy security limitations
+
+**Important Discovery: The Fallback Vulnerability 🔥**
+
+During verification, we discovered that the `fallback()` function's `delegatecall` could allow a malicious implementation to overwrite the proxy's `admin` and `implementation` storage slots!
+
+This is why production proxies use **EIP-1967 storage slots**:
+```solidity
+bytes32 constant ADMIN_SLOT = keccak256("eip1967.proxy.admin") - 1;
+bytes32 constant IMPL_SLOT = keccak256("eip1967.proxy.implementation") - 1;
+```
+
+**Run:** `certoraRun certora/confs/TransparentProxy.conf`
+
+---
+
 ## 4. Directory Structure
 
 ```
 certora/
-├── specs/                    # CVL specification files
-│   └── BoundedCounter.spec   # Spec for BoundedCounter contract
-├── confs/                    # Configuration files
-│   └── BoundedCounter.conf   # Config for running BoundedCounter verification
-├── rules/                    # (Legacy) Additional rule files
+├── specs/                       # CVL specification files
+│   ├── BoundedCounter.spec      # Basic rules and invariants
+│   ├── TokenBalance.spec        # Ghost variables for sum invariant
+│   ├── ArraySum.spec            # Rule-based array verification
+│   └── TransparentProxy.spec    # Proxy access control and upgrade safety
+├── confs/                       # Configuration files
+│   ├── BoundedCounter.conf
+│   ├── TokenBalance.conf
+│   ├── ArraySum.conf
+│   └── TransparentProxy.conf
+├── rules/                       # (Legacy) Additional rule files
 │   ├── admin.cvl
 │   ├── invariants.cvl
 │   └── upgrade.cvl
-└── README.md                 # This file
+└── README.md                    # This file
 ```
 
 ### Configuration File Format
@@ -434,6 +477,7 @@ The dashboard shows:
 
 ## Next Steps
 
-1. **Phase 3: Transparent Proxy Verification** — Verify upgrade safety, storage slots, admin controls
-2. **Learn more CVL**: See [Certora Documentation](https://docs.certora.com/)
-3. Analyse and verify diamond pattern
+1. ~~**Phase 3: Transparent Proxy Verification**~~ ✅ Done
+2. **Phase 4: Create a Fixed TransparentProxy** — Fix vulnerabilities discovered and verify
+3. **Phase 5: Diamond Pattern** — Analyse and verify the diamond proxy pattern
+4. **Learn more CVL**: See [Certora Documentation](https://docs.certora.com/)

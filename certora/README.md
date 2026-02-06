@@ -399,25 +399,77 @@ bytes32 constant IMPL_SLOT = keccak256("eip1967.proxy.implementation") - 1;
 
 ---
 
+### 3.5 TransparentProxyFixed.spec ✅ 🛡️ (Secure Proxy + Harness)
+
+**Contract:** `contracts/03-transparent-proxy/TransparentProxyFixed.sol`
+**Harness:** `contracts/03-transparent-proxy/TransparentProxyFixedHarness.sol`
+
+**Purpose:** Fix the 5 vulnerabilities discovered in Phase 3 and verify stronger properties.
+
+**What we fixed:**
+| # | Vulnerability | Fix |
+|---|--------------|-----|
+| 1 | Storage collision via delegatecall | **EIP-1967 storage slots** |
+| 2 | `upgradeTo(0)` bricks proxy | Zero-address check |
+| 3 | No admin transfer mechanism | **Two-step transfer** (`transferAdmin` → `acceptAdmin`) |
+| 4 | EOA as implementation | Contract validation (`code.length > 0`) |
+| 5 | Selector clashing | **True transparent pattern** (admin → proxy, others → impl) |
+
+**What it proves:**
+| Property | Type | Description |
+|----------|------|-------------|
+| `noFunctionSetsAdminToZero` | Parametric | No function can set admin to zero |
+| `noFunctionSetsImplementationToZero` | Parametric | No function can set implementation to zero |
+| `onlyAdminCanUpgrade` | Rule | Non-admins cannot upgrade |
+| `upgradeRejectsZeroAddress` | Rule | `upgradeTo(0)` always reverts |
+| `transferAdminSetsPending` | Rule | `transferAdmin(x)` sets pending to x |
+| `acceptAdminCompletesTwoStep` | Rule | `acceptAdmin()` transfers admin correctly |
+| `fullTwoStepTransferWorks` | Rule | End-to-end two-step transfer works |
+| `onlyAcceptAdminChangesAdmin` | Parametric | Only `acceptAdmin()` changes admin |
+
+**Key concepts demonstrated:**
+- **Harness contracts** — Expose internal state for verification
+- **EIP-1967 slots** — `keccak256("eip1967.proxy.admin") - 1`
+- **Two-step verification** — Proving multi-transaction processes
+- **Rules vs Invariants** — Rules give more control over assumptions
+
+**Key Solidity patterns:**
+```solidity
+// EIP-1967 storage slot
+bytes32 private constant ADMIN_SLOT = 
+    0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103;
+
+// Assembly storage access
+function _getAdmin() internal view returns (address a) {
+    assembly { a := sload(ADMIN_SLOT) }
+}
+```
+
+**Run:** `certoraRun certora/confs/TransparentProxyFixed.conf`
+
+---
+
 ## 4. Directory Structure
 
 ```
 certora/
-├── specs/                       # CVL specification files
-│   ├── BoundedCounter.spec      # Basic rules and invariants
-│   ├── TokenBalance.spec        # Ghost variables for sum invariant
-│   ├── ArraySum.spec            # Rule-based array verification
-│   └── TransparentProxy.spec    # Proxy access control and upgrade safety
-├── confs/                       # Configuration files
+├── specs/                            # CVL specification files
+│   ├── BoundedCounter.spec           # Basic rules and invariants
+│   ├── TokenBalance.spec             # Ghost variables for sum invariant
+│   ├── ArraySum.spec                 # Rule-based array verification
+│   ├── TransparentProxy.spec         # Original proxy (vulnerabilities exposed)
+│   └── TransparentProxyFixed.spec    # Fixed proxy (20+ verified rules)
+├── confs/                            # Configuration files
 │   ├── BoundedCounter.conf
 │   ├── TokenBalance.conf
 │   ├── ArraySum.conf
-│   └── TransparentProxy.conf
-├── rules/                       # (Legacy) Additional rule files
+│   ├── TransparentProxy.conf
+│   └── TransparentProxyFixed.conf
+├── rules/                            # (Legacy) Additional rule files
 │   ├── admin.cvl
 │   ├── invariants.cvl
 │   └── upgrade.cvl
-└── README.md                    # This file
+└── README.md                         # This file
 ```
 
 ### Configuration File Format
@@ -478,6 +530,6 @@ The dashboard shows:
 ## Next Steps
 
 1. ~~**Phase 3: Transparent Proxy Verification**~~ ✅ Done
-2. **Phase 4: Create a Fixed TransparentProxy** — Fix vulnerabilities discovered and verify
-3. **Phase 5: Diamond Pattern** — Analyse and verify the diamond proxy pattern
+2. ~~**Phase 4: Fixed TransparentProxy**~~ ✅ Done (EIP-1967, two-step admin, 20+ rules)
+3. **Phase 5: Diamond Pattern (EIP-2535)** — Multi-facet proxy verification
 4. **Learn more CVL**: See [Certora Documentation](https://docs.certora.com/)
